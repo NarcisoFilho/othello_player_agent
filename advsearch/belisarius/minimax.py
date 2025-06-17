@@ -20,6 +20,9 @@ def minimax_move(state, max_depth:int, eval_func:Callable) -> Tuple[int, int]:
             return eval_func(current_state, player)
 
         actions = current_state.legal_moves()
+        if not actions:
+            return eval_func(current_state, player)
+            
         successors = [state.next_state(action) for action in actions]
 
         if maximizing_player:
