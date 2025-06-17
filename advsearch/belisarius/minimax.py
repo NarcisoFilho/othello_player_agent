@@ -19,7 +19,7 @@ def minimax_move(state, max_depth:int, eval_func:Callable) -> Tuple[int, int]:
         if current_state.is_terminal() or (max_depth != -1 and depth == max_depth):
             return eval_func(current_state, player)
 
-        actions = current_state.get_actions()
+        actions = current_state.legal_moves()
         successors = current_state.get_successors(actions)
 
         if maximizing_player:
@@ -41,7 +41,7 @@ def minimax_move(state, max_depth:int, eval_func:Callable) -> Tuple[int, int]:
 
     best_value = float('-inf')
     best_move = None
-    actions = state.get_actions()
+    actions = state.legal_moves()
     successors = state.get_successors(actions)
 
     for action, successor in zip(actions, successors):
