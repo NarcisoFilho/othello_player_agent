@@ -33,8 +33,10 @@ def utility(state, player:str) -> float:
     Retorna a utilidade de um estado (terminal) 
     """
     ### return 0 
+    if not state.is_terminal():
+        raise ValueError("utility called on non-terminal state")
+    
     winner = state.get_winner()
-
     if winner is None:
         return 0  # empate
 
