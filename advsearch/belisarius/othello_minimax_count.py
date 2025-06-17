@@ -34,4 +34,12 @@ def evaluate_count(state, player:str) -> float:
     :param state: state to evaluate (instance of GameState)
     :param player: player to evaluate the state for (B or W)
     """
-    return 0   # substitua pelo seu codigo
+    #return 0   
+    board = state.board.tiles
+    flat = ''.join(board)
+    opponent = 'W' if player == 'B' else 'B'
+
+    player_count = flat.count(player)
+    opponent_count = flat.count(opponent)
+
+    return player_count - opponent_count

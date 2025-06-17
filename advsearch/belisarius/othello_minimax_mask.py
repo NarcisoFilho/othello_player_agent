@@ -49,4 +49,6 @@ def evaluate_mask(state, player:str) -> float:
     :param state: state to evaluate (instance of GameState)
     :param player: player to evaluate the state for (B or W)
     """
+
+    
     return 0   # substitua pelo seu codigo
