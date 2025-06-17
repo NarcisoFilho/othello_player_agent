@@ -1,29 +1,34 @@
 import random
 from typing import Tuple, Callable
 
-
-
-def minimax_move(state, max_depth:int, eval_func:Callable) -> Tuple[int, int]:
+def minimax_move(state, max_depth: int, eval_func: Callable) -> Tuple[int, int]:
     """
-    Returns a move computed by the minimax algorithm with alpha-beta pruning for the given game state.
-    :param state: state to make the move (instance of GameState)
-    :param max_depth: maximum depth of search (-1 = unlimited)
-    :param eval_func: the function to evaluate a terminal or leaf state (when search is interrupted at max_depth)
-                    This function should take a GameState object and a string identifying the player,
-                    and should return a float value representing the utility of the state for the player.
-    :return: (int, int) tuple with x, y coordinates of the move (remember: 0 is the first row/column)
+    Retorna a melhor jogada usando Minimax com poda alfa-beta.
+    :param state: estado atual (GameState)
+    :param max_depth: profundidade máxima (-1 = ilimitada)
+    :param eval_func: função de avaliação (state, player) -> valor
+    :return: tupla (x, y) com a melhor jogada
     """
-    player = state.player # jogador na raiz
+    player = state.player
 
     def alphabeta(current_state, depth, alpha, beta, maximizing_player):
-        if current_state.is_terminal() or (max_depth != -1 and depth == max_depth):
+        # Caso terminal ou corte por profundidade
+        if current_state.is_terminal():
+            return eval_func(current_state, player)
+
+        if max_depth != -1 and depth >= max_depth:
             return eval_func(current_state, player)
 
         actions = current_state.legal_moves()
         if not actions:
             return eval_func(current_state, player)
-            
-        successors = [state.next_state(action) for action in actions]
+
+        successors = [current_state.next_state(a) for a in actions]
+
+        # Segurança: remove estados nulos ou repetidos
+        successors = [s for s in successors if s is not None and s != current_state]
+        if not successors:
+            return eval_func(current_state, player)
 
         if maximizing_player:
             value = float('-inf')
@@ -31,7 +36,7 @@ def minimax_move(state, max_depth:int, eval_func:Callable) -> Tuple[int, int]:
                 value = max(value, alphabeta(child, depth + 1, alpha, beta, False))
                 alpha = max(alpha, value)
                 if beta <= alpha:
-                    break   # poda alpha
+                    break  # poda beta
             return value
         else:
             value = float('inf')
@@ -39,13 +44,21 @@ def minimax_move(state, max_depth:int, eval_func:Callable) -> Tuple[int, int]:
                 value = min(value, alphabeta(child, depth + 1, alpha, beta, True))
                 beta = min(beta, value)
                 if beta <= alpha:
-                    break  # poda beta
-            return value 
+                    break  # poda alfa
+            return value
+
+    # Movimento raiz
+    actions = state.legal_moves()
+    if not actions:
+        return (1, 1)  # fallback seguro
+
+    successors = [state.next_state(a) for a in actions]
+    successors = [s for s in successors if s is not None and s != state]
+    if not successors:
+        return random.choice(actions)
 
     best_value = float('-inf')
     best_move = None
-    actions = state.legal_moves()
-    successors = [state.next_state(action) for action in actions]
 
     for action, successor in zip(actions, successors):
         value = alphabeta(successor, 1, float('-inf'), float('inf'), False)
@@ -53,8 +66,4 @@ def minimax_move(state, max_depth:int, eval_func:Callable) -> Tuple[int, int]:
             best_value = value
             best_move = action
 
-    # fallback caso nenhuma jogada tenha sido selecionada
-    if best_move is None and actions:
-        best_move = random.choice(actions)
-
-    return best_move
+    return best_move if best_move else random.choice(actions)

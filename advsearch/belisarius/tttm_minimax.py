@@ -26,6 +26,7 @@ def make_move(state: GameState) -> Tuple[int, int]:
     # Preencha a funcao utility com o valor de um estado terminal e passe-a como funcao de avaliação para seu minimax_move
 
     ### return random.choice(range(3)), random.choice(range(3))
+    from .minimax import minimax_move
     return minimax_move(state, -1, utility)
 
 def utility(state, player:str) -> float:
@@ -34,14 +35,13 @@ def utility(state, player:str) -> float:
     """
     ### return 0 
     if not state.is_terminal():
-        raise ValueError("utility called on non-terminal state")
-    
+        raise ValueError("utility() chamado em estado não-terminal.")
+
     winner = state.winner()
-    if winner is None:
-        return 0  # empate
 
     if winner == player:
-        return float('inf')  # adversário perdeu
+        return float('inf') # adversário perdeu
+    elif winner is None:
+        return 0  #empate
     else:
         return float('-inf')  # jogador perdeu
-
