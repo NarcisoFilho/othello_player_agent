@@ -37,7 +37,7 @@ def evaluate_count(state, player:str) -> float:
     """
     #return 0   
     board = state.board.tiles
-    flat = ''.join(board)
+    flat = ''.join(cell for row in board for cell in row)
     opponent = 'W' if player == 'B' else 'B'
 
     player_count = flat.count(player)
