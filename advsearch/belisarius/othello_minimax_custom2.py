@@ -25,7 +25,7 @@ def evaluate_custom(state, player: str) -> float:
     score = 0
     player_tiles = 0
     opponent_tiles = 0
-    player_moves = len(state.actions)
+    player_moves = len(state.get_legal_actions(player))
 
     # Inverter jogador para estimar mobilidade do oponente
     opponent_state = state.copy()
