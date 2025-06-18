@@ -19,6 +19,15 @@ def make_move(state) -> Tuple[int, int]:
     return minimax_move(state, 4, evaluate_custom)
 
 def evaluate_custom(state: GameState, player: str) -> float:
+    if state.is_terminal():
+        winner = state.winner()
+        if winner == player:
+            return float('inf')  # vitória
+        elif winner is None:
+            return 0  # empate
+        else:
+            return float('-inf')  # derrota
+            
     board = state.board.tiles
     opponent = 'W' if player == 'B' else 'B'
 
