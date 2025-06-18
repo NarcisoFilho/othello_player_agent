@@ -60,7 +60,7 @@ def evaluate_mask(state, player:str) -> float:
     for y in range(8):
         for x in range(8):
             cell = board[y][x]
-            value = POSITION_MASK[y][x]
+            value = EVAL_TEMPLATE[y][x]
             if cell == player:
                 total += value
             elif cell == opponent:
