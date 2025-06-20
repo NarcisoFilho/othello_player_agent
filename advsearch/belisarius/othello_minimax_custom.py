@@ -50,7 +50,6 @@ def evaluate_custom(state: GameState, player: str) -> float:
             if (x, y) in [(0, 0), (0, 7), (7, 0), (7, 7)]:
                 corner_score += 25 * multiplier
 
-            # frontier (peças adjacentes a casas vazias)
             for dx, dy in directions:
                 nx, ny = x + dx, y + dy
                 if 0 <= nx < 8 and 0 <= ny < 8 and board[ny][nx] == '.':
@@ -60,10 +59,8 @@ def evaluate_custom(state: GameState, player: str) -> float:
             if (x in [0, 7] or y in [0, 7]) and cell == player:
                 stable_score += 1
 
-    # Mobilidade
     player_moves = len(state.legal_moves())
 
-    # Criar estado simulado do oponente
     opponent_state = GameState(state.board.copy(), opponentimport random
 from typing import Tuple
 from ..othello.gamestate import GameState
@@ -101,7 +98,6 @@ def evaluate_custom(state, player: str) -> float:
     corner_score = 0
 
     player_moves = len(state.actions)
-    # gerar estado do oponente para contar mobilidade dele
     opponent_state = state.copy()
     opponent_state.player = opponent
     opponent_moves = len(opponent_state.actions)
@@ -123,7 +119,6 @@ def evaluate_custom(state, player: str) -> float:
         elif board[y][x] == opponent:
             corner_score -= 1
 
-    # Pesos para cada fator da heurística
     piece_weight = 10
     mobility_weight = 80
     position_weight = 15
@@ -145,7 +140,6 @@ def evaluate_custom(state, player: str) -> float:
     if player_moves + opponent_moves > 0:
         mobility_score = 100 * (player_moves - opponent_moves) / (player_moves + opponent_moves)
 
-    # Paridade
     empty_tiles = sum(row.count('.') for row in board)
     parity = 1 if empty_tiles % 2 == 0 else -1
 
