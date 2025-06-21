@@ -16,7 +16,7 @@ EVAL_TEMPLATE = [
 ]
 
 def make_move(state) -> Tuple[int, int]:
-    return minimax_move(state, 4, evaluate_custom)
+    return minimax_move(state, 4, evaluate_custom)  # p 4
 
 def evaluate_custom(state: GameState, player: str) -> float:
     if state.is_terminal():
@@ -59,20 +59,30 @@ def evaluate_custom(state: GameState, player: str) -> float:
             if (x in [0, 7] or y in [0, 7]) and cell == player:
                 stable_score += 1
 
-    # Mobilidade
-    player_moves = len(state.legal_moves())
-    opponent_state = GameState(state.board.copy(), opponent)
-    opponent_moves = len(opponent_state.legal_moves())
+    try:
+        if state.player == player:
+            player_moves = len(state.legal_moves())
+            opponent_state = GameState(state.board.copy(), opponent)
+            opponent_moves = len(opponent_state.legal_moves())
+        elif state.player == opponent:
+            opponent_moves = len(state.legal_moves())
+            player_state = GameState(state.board.copy(), player)
+            player_moves = len(player_state.legal_moves())
+        else:
+            player_moves = 0
+            opponent_moves = 0
+    except:
+        player_moves = 0
+        opponent_moves = 0
 
-    mobility_score = 0
     if player_moves + opponent_moves > 0:
         mobility_score = 100 * (player_moves - opponent_moves) / (player_moves + opponent_moves)
+    else:
+        mobility_score = 0
 
-    # Paridade
     empty_tiles = sum(row.count('.') for row in board)
     parity = 1 if empty_tiles % 2 == 0 else -1
 
-    # Heurística combinada
     return (
         15 * position_score +
         80 * mobility_score +
